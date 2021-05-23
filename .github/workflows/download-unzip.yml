@@ -1,0 +1,42 @@
+name: download and unzip
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download-unzip:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 1
+      matrix:
+        year:
+          - 2021
+          - 2020
+          - 2019
+          - 2018
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+
+      - name: create archives folder
+        run: mkdir -p archives
+
+      - name: Download
+        run: |
+          wget https://storage.googleapis.com/ad-manager-political-ads-dump/political/${{ matrix.year }}/PoliticalAds.zip -O ./archives/${{ matrix.year }}.zip
+
+      - name: Unzip
+        run: |
+          unzip ./archives/${{ matrix.year }}.zip
+
+      - name: Cleanup
+        run: |
+          mv PoliticalAds.csv ${{ matrix.year }}.csv
+          rm readme.txt
+
+      - name: Commit
+        uses: ./.github/actions/commit
+        with:
+          message: ⚡ ${{ matrix.year }}.csv
