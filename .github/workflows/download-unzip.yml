@@ -1,6 +1,8 @@
 name: download and unzip
 
 on:
+  schedule:
+    - cron: "0 7 * * *"
   workflow_dispatch:
 
 jobs:
@@ -11,6 +13,7 @@ jobs:
       max-parallel: 1
       matrix:
         year:
+          - 2022
           - 2021
           - 2020
           - 2019
